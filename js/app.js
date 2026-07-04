@@ -48,7 +48,7 @@ function ag_buildSidebar(activeId){
       <div class="sidebar-user" onclick="location.href='settings.html'">
         <img src="https://i.pravatar.cc/64?img=32" alt="User avatar">
         <div class="u-meta">
-          <strong>Karthik Subramaniam</strong>
+          <strong>Santihya thangave;</strong>
           <span>Farm Manager</span>
         </div>
       </div>

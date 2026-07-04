@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriGuard AI — Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  body{ overflow-x:hidden; }
+  .login-shell{
+    min-height:100vh; display:flex;
+  }
+  .login-visual{
+    flex:1.1;
+    position:relative;
+    background:
+      radial-gradient(700px 500px at 20% 15%, rgba(53,172,125,0.35), transparent 60%),
+      radial-gradient(600px 500px at 85% 80%, rgba(212,162,76,0.28), transparent 60%),
+      linear-gradient(160deg, var(--green-950), var(--green-900) 55%, #0C2E22 100%);
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding: 3rem 3.2rem;
+    color:#EAF2EC;
+    overflow:hidden;
+  }
+  .login-visual .brand{ display:flex; align-items:center; gap:.8rem; position:relative; z-index:2; }
+  .login-visual .brand .mark{
+    width:44px;height:44px;border-radius:13px;
+    background: linear-gradient(135deg, var(--amber-500), var(--green-500));
+    display:flex;align-items:center;justify-content:center; box-shadow:0 6px 18px rgba(212,162,76,0.4);
+  }
+  .login-visual .brand .mark i{ color:var(--green-950); font-size:1.3rem; }
+  .login-visual .headline{ position:relative; z-index:2; max-width:520px; }
+  .login-visual .headline .eyebrow{ font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color: var(--amber-500); font-weight:700; }
+  .login-visual .headline h1{ font-family:var(--font-display); font-size:2.6rem; line-height:1.08; margin:.6rem 0 1rem; }
+  .login-visual .headline p{ color: rgba(234,242,236,0.72); font-size:.98rem; max-width:440px; }
+  .stat-row{ display:flex; gap:1.6rem; position:relative; z-index:2; flex-wrap:wrap; }
+  .stat-row .stat strong{ display:block; font-family:var(--font-display); font-size:1.5rem; }
+  .stat-row .stat span{ font-size:.72rem; color: rgba(234,242,236,0.55); text-transform:uppercase; letter-spacing:.06em; }
+
+  .gauge-decor{ position:absolute; right:-60px; top:38%; opacity:.5; }
+
+  .login-form-side{
+    flex:1; display:flex; align-items:center; justify-content:center; padding: 2rem;
+    background: var(--bg);
+  }
+  .login-card{ width:100%; max-width:420px; }
+  .login-card .form-check-label{ font-size:.85rem; color: var(--text-secondary); }
+  .divider-text{ display:flex; align-items:center; gap:.8rem; color: var(--text-muted); font-size:.78rem; margin: 1.3rem 0; }
+  .divider-text::before, .divider-text::after{ content:''; flex:1; height:1px; background: var(--surface-border); }
+  .demo-btn{
+    display:flex; align-items:center; justify-content:center; gap:.5rem;
+    border:1.5px solid var(--surface-border); border-radius: var(--radius-sm);
+    padding:.6rem; font-size:.83rem; font-weight:600; color: var(--text-secondary);
+    background: var(--surface-solid); cursor:pointer; transition: all var(--transition-fast);
+  }
+  .demo-btn:hover{ border-color: var(--green-500); color: var(--green-700); }
+  @media (max-width: 991px){ .login-visual{ display:none; } }
+</style>
+</head>
+<body>
+
+<div class="login-shell">
+  <div class="login-visual">
+    <div class="brand">
+      <div class="mark"><i class="bi bi-flower2"></i></div>
+      <div>
+        <strong style="font-family:var(--font-display); font-size:1.2rem;">AgriGuard AI</strong>
+        <div style="font-size:.72rem; color:rgba(234,242,236,0.55); letter-spacing:.08em; text-transform:uppercase;">MRL &amp; AMU Platform</div>
+      </div>
+    </div>
+
+    <div class="headline">
+      <span class="eyebrow">Precision livestock compliance</span>
+      <h1>Know the residue before it reaches the plate.</h1>
+      <p>AgriGuard AI keeps every dose, withdrawal window, and residue test in one place — so your herd stays compliant and your food chain stays safe.</p>
+    </div>
+
+    <div class="gauge-decor d-none d-xl-block">
+      <svg width="260" height="260" viewBox="0 0 260 260">
+        <circle cx="130" cy="130" r="105" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="16"/>
+        <circle cx="130" cy="130" r="105" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round" stroke-dasharray="660" stroke-dashoffset="90" transform="rotate(-90 130 130)"/>
+        <defs>
+          <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#35AC7D"/>
+            <stop offset="100%" stop-color="#D4A24C"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><strong>97.2%</strong><span>MRL Compliance</span></div>
+      <div class="stat"><strong>1,240+</strong><span>Animals Tracked</span></div>
+      <div class="stat"><strong>24/7</strong><span>AI Monitoring</span></div>
+    </div>
+  </div>
+
+  <div class="login-form-side">
+    <div class="login-card animate-in">
+      <div class="mb-4 d-lg-none text-center">
+        <div class="mx-auto mb-2" style="width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--amber-500),var(--green-500));display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-flower2" style="color:var(--green-950); font-size:1.3rem;"></i>
+        </div>
+        <strong style="font-family:var(--font-display); font-size:1.2rem;">AgriGuard AI</strong>
+      </div>
+
+      <h2 class="mb-1">Welcome back</h2>
+      <p class="text-muted-custom mb-4" style="font-size:.9rem;">Sign in to manage your farm's residue and antimicrobial compliance.</p>
+
+      <form id="loginForm">
+        <div class="mb-3">
+          <label class="form-label">Email address</label>
+          <input type="email" class="form-control" id="loginEmail" placeholder="you@farmdomain.com" value="karthik@agriguard.ai" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <div class="position-relative">
+            <input type="password" class="form-control" id="loginPassword" placeholder="••••••••••" value="demo1234" required>
+            <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y me-1 p-1 text-muted-custom" style="border:none;background:none;" id="togglePw"><i class="bi bi-eye"></i></button>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="rememberMe" checked>
+            <label class="form-check-label" for="rememberMe">Remember me</label>
+          </div>
+          <a href="#" class="small" style="color:var(--green-700); font-weight:600;">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn btn-brand w-100 py-2" id="loginSubmitBtn">
+          <span id="loginBtnText">Sign in</span>
+        </button>
+      </form>
+
+      <div class="divider-text">or continue with demo</div>
+
+      <div class="row g-2">
+        <div class="col-6"><button class="demo-btn w-100" onclick="location.href='dashboard.html'"><i class="bi bi-person-badge"></i> Farm Manager</button></div>
+        <div class="col-6"><button class="demo-btn w-100" onclick="location.href='dashboard.html'"><i class="bi bi-clipboard2-pulse"></i> Veterinarian</button></div>
+      </div>
+
+      <p class="text-center text-muted-custom mt-4" style="font-size:.8rem;">Don't have an account? <a href="#" style="color:var(--green-700); font-weight:600;">Request access</a></p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.documentElement.setAttribute('data-theme', localStorage.getItem('ag-theme') || 'light');
+
+  document.getElementById('togglePw').addEventListener('click', function(){
+    const pw = document.getElementById('loginPassword');
+    const icon = this.querySelector('i');
+    if(pw.type === 'password'){ pw.type = 'text'; icon.className = 'bi bi-eye-slash'; }
+    else{ pw.type = 'password'; icon.className = 'bi bi-eye'; }
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const btn = document.getElementById('loginSubmitBtn');
+    const txt = document.getElementById('loginBtnText');
+    txt.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in…';
+    btn.disabled = true;
+    setTimeout(() => {
+      sessionStorage.setItem('ag-authed', 'true');
+      window.location.href = 'dashboard.html';
+    }, 900);
+  });
+</script>
+</body>
+</html>

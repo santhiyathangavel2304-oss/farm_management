@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — AgriGuard AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .settings-nav .nav-link{
+    color: var(--text-secondary); font-size:.87rem; font-weight:600; padding:.7rem 1rem; border-radius:12px; margin-bottom:.25rem;
+  }
+  .settings-nav .nav-link.active{ background: var(--surface-solid); color: var(--green-700); border:1px solid var(--surface-border); }
+  .settings-nav .nav-link i{ margin-right:.6rem; width:18px; text-align:center; }
+  .toggle-row{ display:flex; justify-content:space-between; align-items:center; padding: .9rem 0; border-bottom:1px solid var(--surface-border); }
+  .toggle-row:last-child{ border-bottom:none; }
+  .form-switch .form-check-input{ width:2.6em; height:1.4em; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div id="agShellSidebar"></div>
+  <div class="main-col" id="agMainCol">
+    <div id="agShellTopbar"></div>
+
+    <div class="page-body">
+      <div class="row g-3">
+        <div class="col-lg-3">
+          <div class="glass-card p-3 animate-in">
+            <div class="nav flex-column settings-nav">
+              <a class="nav-link active" data-tab="profile"><i class="bi bi-person-fill"></i>Profile</a>
+              <a class="nav-link" data-tab="farm"><i class="bi bi-house-fill"></i>Farm Details</a>
+              <a class="nav-link" data-tab="notifications"><i class="bi bi-bell-fill"></i>Notification Preferences</a>
+              <a class="nav-link" data-tab="appearance"><i class="bi bi-palette-fill"></i>Appearance</a>
+              <a class="nav-link" data-tab="security"><i class="bi bi-shield-lock-fill"></i>Security</a>
+              <a class="nav-link" data-tab="team"><i class="bi bi-people-fill"></i>Team Access</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-9">
+          <!-- Profile -->
+          <div class="settings-panel glass-card p-4 animate-in" data-panel="profile">
+            <div class="section-head"><div><span class="eyebrow">Account</span><h2>Profile</h2></div></div>
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <img src="https://i.pravatar.cc/80?img=32" class="rounded-3" width="72" height="72" alt="Avatar">
+              <div>
+                <button class="btn btn-outline-brand btn-sm">Change photo</button>
+                <p class="text-muted-custom mb-0 mt-1" style="font-size:.78rem;">JPG or PNG, max 2MB</p>
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6"><label class="form-label">Full Name</label><input class="form-control" value="Karthik Subramaniam"></div>
+              <div class="col-md-6"><label class="form-label">Role</label><input class="form-control" value="Farm Manager"></div>
+              <div class="col-md-6"><label class="form-label">Email</label><input class="form-control" value="karthik@agriguard.ai"></div>
+              <div class="col-md-6"><label class="form-label">Phone</label><input class="form-control" value="+91 98765 43210"></div>
+            </div>
+            <button class="btn btn-brand mt-4" onclick="ag_toast('Profile updated successfully','green','check-circle-fill')">Save Changes</button>
+          </div>
+
+          <!-- Farm -->
+          <div class="settings-panel glass-card p-4 animate-in" data-panel="farm" style="display:none;">
+            <div class="section-head"><div><span class="eyebrow">Operations</span><h2>Farm Details</h2></div></div>
+            <div class="row g-3">
+              <div class="col-md-6"><label class="form-label">Farm Name</label><input class="form-control" value="Green Valley Livestock Co."></div>
+              <div class="col-md-6"><label class="form-label">Registration ID</label><input class="form-control" value="IN-FARM-88213"></div>
+              <div class="col-md-6"><label class="form-label">Location</label><input class="form-control" value="Chennai, Tamil Nadu, India"></div>
+              <div class="col-md-6"><label class="form-label">Primary Species</label><input class="form-control" value="Mixed — Cattle, Poultry, Swine"></div>
+              <div class="col-md-6"><label class="form-label">Default MRL Standard</label>
+                <select class="form-select"><option>Codex Alimentarius (CAC)</option><option>FSSAI (India)</option><option>EU MRL Regulation</option></select>
+              </div>
+              <div class="col-md-6"><label class="form-label">Time Zone</label>
+                <select class="form-select"><option>Asia/Kolkata (IST)</option><option>UTC</option></select>
+              </div>
+            </div>
+            <button class="btn btn-brand mt-4" onclick="ag_toast('Farm details saved','green','check-circle-fill')">Save Changes</button>
+          </div>
+
+          <!-- Notifications -->
+          <div class="settings-panel glass-card p-4 animate-in" data-panel="notifications" style="display:none;">
+            <div class="section-head"><div><span class="eyebrow">Preferences</span><h2>Notification Settings</h2></div></div>
+            <div class="toggle-row"><div><strong style="font-size:.88rem;">MRL Exceedance Alerts</strong><p class="text-muted-custom mb-0" style="font-size:.78rem;">Get notified immediately when a residue test exceeds safe limits</p></div><div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked></div></div>
+            <div class="toggle-row"><div><strong style="font-size:.88rem;">Withdrawal Period Reminders</strong><p class="text-muted-custom mb-0" style="font-size:.78rem;">Alerts 2 days before an animal's withdrawal period ends</p></div><div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked></div></div>
+            <div class="toggle-row"><div><strong style="font-size:.88rem;">AI Disease Detection Results</strong><p class="text-muted-custom mb-0" style="font-size:.78rem;">Notify when a new scan result is ready</p></div><div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked></div></div>
+            <div class="toggle-row"><div><strong style="font-size:.88rem;">Weekly Compliance Digest</strong><p class="text-muted-custom mb-0" style="font-size:.78rem;">Summary email every Monday morning</p></div><div class="form-check form-switch"><input class="form-check-input" type="checkbox"></div></div>
+            <div class="toggle-row"><div><strong style="font-size:.88rem;">SMS Alerts for Critical Issues</strong><p class="text-muted-custom mb-0" style="font-size:.78rem;">Send SMS in addition to app notifications</p></div><div class="form-check form-switch"><input class="form-check-input" type="checkbox"></div></div>
+          </div>
+
+          <!-- Appearance -->
+          <div class="settings-panel glass-card p-4 animate-in" data-panel="appearance" style="display:none;">
+            <div class="section-head"><div><span class="eyebrow">Display</span><h2>Appearance</h2></div></div>
+            <p class="fw-semibold mb-2" style="font-size:.88rem;">Theme</p>
+            <div class="row g-3 mb-4">
+              <div class="col-6 col-md-4">
+                <div class="card-solid p-3 text-center" style="cursor:pointer;" onclick="ag_setTheme('light')">
+                  <div style="height:70px; border-radius:10px; background:#F5F7F2; border:1px solid #eee; margin-bottom:.6rem;"></div>
+                  <strong style="font-size:.85rem;">Light</strong>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="card-solid p-3 text-center" style="cursor:pointer;" onclick="ag_setTheme('dark')">
+                  <div style="height:70px; border-radius:10px; background:#0C1712; margin-bottom:.6rem;"></div>
+                  <strong style="font-size:.85rem;">Dark</strong>
+                </div>
+              </div>
+            </div>
+            <p class="text-muted-custom" style="font-size:.8rem;">You can also toggle the theme quickly using the sun/moon switch in the top bar.</p>
+          </div>
+
+          <!-- Security -->
+          <div class="settings-panel glass-card p-4 animate-in" data-panel="security" style="display:none;">
+            <div class="section-head"><div><span class="eyebrow">Account safety</span><h2>Security</h2></div></div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6"><label class="form-label">Current Password</label><input type="password" class="form-control" value="••••••••••"></div>
+              <div class="col-md-6"><label class="form-label">New Password</label><input type="password" class="form-control" placeholder="Enter new password"></div>
+            </div>
+            <button class="btn btn-brand mb-4" onclick="ag_toast('Password updated successfully','green','shield-check')">Update Password</button>
+            <div class="toggle-row"><div><strong style="font-size:.88rem;">Two-Factor Authentication</strong><p class="text-muted-custom mb-0" style="font-size:.78rem;">Add an extra layer of security to your account</p></div><div class="form-check form-switch"><input class="form-check-input" type="checkbox"></div></div>
+          </div>
+
+          <!-- Team -->
+          <div class="settings-panel glass-card p-4 animate-in" data-panel="team" style="display:none;">
+            <div class="section-head">
+              <div><span class="eyebrow">Access</span><h2>Team Access</h2></div>
+              <button class="btn btn-brand btn-sm"><i class="bi bi-person-plus me-1"></i>Invite Member</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table-clean">
+                <thead><tr><th>Member</th><th>Role</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><img src="https://i.pravatar.cc/32?img=32" class="avatar-chip me-2">Karthik Subramaniam</td><td>Farm Manager (Owner)</td><td><span class="pill pill-green">Active</span></td><td></td></tr>
+                  <tr><td><img src="https://i.pravatar.cc/32?img=45" class="avatar-chip me-2">Dr. Meera Nair</td><td>Veterinarian</td><td><span class="pill pill-green">Active</span></td><td><button class="icon-btn" style="width:32px;height:32px;"><i class="bi bi-three-dots"></i></button></td></tr>
+                  <tr><td><img src="https://i.pravatar.cc/32?img=51" class="avatar-chip me-2">Arjun Rao</td><td>Farm Staff</td><td><span class="pill pill-blue">Invited</span></td><td><button class="icon-btn" style="width:32px;height:32px;"><i class="bi bi-three-dots"></i></button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  ag_requireAuth();
+  ag_initShell('settings', 'Settings', 'Manage your account and farm preferences');
+
+  document.querySelectorAll('.settings-nav .nav-link').forEach(link => {
+    link.addEventListener('click', function(){
+      document.querySelectorAll('.settings-nav .nav-link').forEach(l=>l.classList.remove('active'));
+      this.classList.add('active');
+      const tab = this.dataset.tab;
+      document.querySelectorAll('.settings-panel').forEach(p => {
+        p.style.display = p.dataset.panel === tab ? 'block' : 'none';
+      });
+    });
+  });
+
+  function ag_setTheme(mode){
+    document.documentElement.setAttribute('data-theme', mode);
+    localStorage.setItem('ag-theme', mode);
+    ag_updateThemeToggleUI(mode);
+    ag_toast(`Switched to ${mode} mode`, 'green', 'palette-fill');
+  }
+</script>
+</body>
+</html>

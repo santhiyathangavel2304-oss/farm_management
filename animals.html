@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animal Management — AgriGuard AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="app-shell">
+  <div id="agShellSidebar"></div>
+  <div class="main-col" id="agMainCol">
+    <div id="agShellTopbar"></div>
+
+    <div class="page-body">
+
+      <div class="glass-card p-3 mb-4 animate-in">
+        <div class="row g-2 align-items-center">
+          <div class="col-md-4">
+            <div class="search-mini" style="width:100%;">
+              <i class="bi bi-search"></i>
+              <input type="text" id="animalSearch" placeholder="Search by tag ID or name…">
+            </div>
+          </div>
+          <div class="col-6 col-md-2">
+            <select class="form-select" id="filterSpecies">
+              <option value="">All Species</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-2">
+            <select class="form-select" id="filterStatus">
+              <option value="">All Status</option>
+              <option>Healthy</option>
+              <option>Under Treatment</option>
+              <option>Withdrawal Period</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-2">
+            <select class="form-select" id="filterFarm">
+              <option value="">All Farms</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-2 text-md-end">
+            <button class="btn btn-brand w-100" data-bs-toggle="modal" data-bs-target="#addAnimalModal"><i class="bi bi-plus-lg me-1"></i>Add Animal</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="glass-card kpi-card hoverable animate-in delay-1">
+            <div class="kpi-icon icon-tint-green"><i class="bi bi-heart-pulse-fill"></i></div>
+            <div class="kpi-value" id="statHealthy">0</div>
+            <div class="kpi-label">Healthy Animals</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="glass-card kpi-card hoverable animate-in delay-2">
+            <div class="kpi-icon icon-tint-blue"><i class="bi bi-capsule"></i></div>
+            <div class="kpi-value" id="statTreatment">0</div>
+            <div class="kpi-label">Under Treatment</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="glass-card kpi-card hoverable animate-in delay-3">
+            <div class="kpi-icon icon-tint-amber"><i class="bi bi-hourglass-split"></i></div>
+            <div class="kpi-value" id="statWithdrawal">0</div>
+            <div class="kpi-label">In Withdrawal</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="glass-card kpi-card hoverable animate-in delay-4">
+            <div class="kpi-icon icon-tint-green"><i class="bi bi-diagram-3-fill"></i></div>
+            <div class="kpi-value" id="statTotal">0</div>
+            <div class="kpi-label">Total Herd Size</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card p-4 animate-in">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Herd registry</span>
+            <h2>All Animals</h2>
+          </div>
+          <span class="text-muted-custom" id="resultCount" style="font-size:.82rem;"></span>
+        </div>
+        <div class="table-responsive">
+          <table class="table-clean" id="animalsTable">
+            <thead>
+              <tr>
+                <th>Tag ID</th><th>Name</th><th>Species</th><th>Farm</th><th>Age (mo)</th><th>Weight</th><th>Health Score</th><th>Status</th><th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add Animal Modal -->
+<div class="modal fade" id="addAnimalModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Register New Animal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addAnimalForm">
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="form-label">Tag ID</label>
+              <input type="text" class="form-control" placeholder="e.g. CTL-1055" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" placeholder="e.g. Dairy Cattle 55" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Species</label>
+              <select class="form-select" required>
+                <option>Dairy Cattle</option><option>Beef Cattle</option><option>Poultry — Broiler</option>
+                <option>Poultry — Layer</option><option>Swine</option><option>Sheep</option><option>Goat</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Farm / Block</label>
+              <select class="form-select" required>
+                <option>Green Valley Unit</option><option>Riverside Block A</option><option>Riverside Block B</option>
+                <option>Hilltop Pasture</option><option>North Barn</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Age (months)</label>
+              <input type="number" class="form-control" placeholder="24" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Weight (kg)</label>
+              <input type="number" class="form-control" placeholder="450" required>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-brand" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-brand" id="saveAnimalBtn">Save Animal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Animal Detail Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="animalDetailPanel" style="width:420px; background:var(--bg-elevated); border-left:1px solid var(--surface-border);">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Animal Profile</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body" id="animalDetailBody"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  ag_requireAuth();
+  ag_initShell('animals', 'Animal Management', 'Registry and health status of your livestock');
+
+  let currentFilters = { search:'', species:'', status:'', farm:'' };
+
+  // Populate filters
+  const speciesSet = [...new Set(AG_DATA.animals.map(a=>a.species))];
+  document.getElementById('filterSpecies').innerHTML += speciesSet.map(s=>`<option>${s}</option>`).join('');
+  document.getElementById('filterFarm').innerHTML += AG_DATA.farms.map(f=>`<option>${f}</option>`).join('');
+
+  function statusPill(status){
+    if(status==='Healthy') return `<span class="pill pill-green"><span class="pill-dot"></span>Healthy</span>`;
+    if(status==='Under Treatment') return `<span class="pill pill-blue"><span class="pill-dot"></span>Under Treatment</span>`;
+    return `<span class="pill pill-amber"><span class="pill-dot"></span>Withdrawal Period</span>`;
+  }
+
+  function renderTable(){
+    let list = AG_DATA.animals.filter(a => {
+      const matchSearch = (a.id + a.name).toLowerCase().includes(currentFilters.search.toLowerCase());
+      const matchSpecies = !currentFilters.species || a.species === currentFilters.species;
+      const matchStatus = !currentFilters.status || a.status === currentFilters.status;
+      const matchFarm = !currentFilters.farm || a.farm === currentFilters.farm;
+      return matchSearch && matchSpecies && matchStatus && matchFarm;
+    });
+
+    document.getElementById('resultCount').textContent = `${list.length} of ${AG_DATA.animals.length} animals`;
+
+    document.querySelector('#animalsTable tbody').innerHTML = list.map(a => `
+      <tr style="cursor:pointer;" onclick="openAnimalDetail('${a.id}')">
+        <td class="mono fw-semibold">${a.id}</td>
+        <td>${a.name}</td>
+        <td>${a.species}</td>
+        <td>${a.farm}</td>
+        <td>${a.age}</td>
+        <td>${a.weight} kg</td>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:60px;height:6px;background:var(--surface-border);border-radius:4px;overflow:hidden;">
+              <div style="width:${a.health}%;height:100%;background:linear-gradient(90deg,var(--green-500),var(--green-700));"></div>
+            </div>
+            <span style="font-size:.78rem;">${a.health}</span>
+          </div>
+        </td>
+        <td>${statusPill(a.status)}</td>
+        <td><button class="icon-btn" style="width:32px;height:32px;" onclick="event.stopPropagation(); openAnimalDetail('${a.id}')"><i class="bi bi-chevron-right"></i></button></td>
+      </tr>
+    `).join('') || `<tr><td colspan="9" class="text-center text-muted-custom py-4">No animals match your filters.</td></tr>`;
+
+    document.getElementById('statHealthy').textContent = AG_DATA.animals.filter(a=>a.status==='Healthy').length;
+    document.getElementById('statTreatment').textContent = AG_DATA.animals.filter(a=>a.status==='Under Treatment').length;
+    document.getElementById('statWithdrawal').textContent = AG_DATA.animals.filter(a=>a.status==='Withdrawal Period').length;
+    document.getElementById('statTotal').textContent = AG_DATA.animals.length;
+  }
+
+  document.getElementById('animalSearch').addEventListener('input', e => { currentFilters.search = e.target.value; renderTable(); });
+  document.getElementById('filterSpecies').addEventListener('change', e => { currentFilters.species = e.target.value; renderTable(); });
+  document.getElementById('filterStatus').addEventListener('change', e => { currentFilters.status = e.target.value; renderTable(); });
+  document.getElementById('filterFarm').addEventListener('change', e => { currentFilters.farm = e.target.value; renderTable(); });
+
+  function openAnimalDetail(id){
+    const a = AG_DATA.animals.find(x=>x.id===id);
+    const relatedAmu = AG_DATA.amuRecords.filter(r=>r.animalId===id);
+    const relatedMrl = AG_DATA.mrlTests.filter(r=>r.animalId===id);
+    document.getElementById('animalDetailBody').innerHTML = `
+      <div class="text-center mb-3">
+        <div class="mx-auto mb-2 d-flex align-items-center justify-content-center" style="width:64px;height:64px;border-radius:16px;background:var(--green-100);color:var(--green-700);font-size:1.6rem;"><i class="bi bi-clipboard2-pulse-fill"></i></div>
+        <h4 class="mb-0">${a.name}</h4>
+        <span class="mono text-muted-custom">${a.id}</span>
+      </div>
+      <div class="d-flex justify-content-center mb-3">${statusPill(a.status)}</div>
+      <div class="card-solid p-3 mb-3">
+        <div class="row text-center g-2">
+          <div class="col-4"><div class="fw-bold">${a.species.split(' ')[0]}</div><div class="text-muted-custom" style="font-size:.72rem;">Species</div></div>
+          <div class="col-4"><div class="fw-bold">${a.age} mo</div><div class="text-muted-custom" style="font-size:.72rem;">Age</div></div>
+          <div class="col-4"><div class="fw-bold">${a.weight} kg</div><div class="text-muted-custom" style="font-size:.72rem;">Weight</div></div>
+        </div>
+      </div>
+      <p class="fw-semibold mb-2" style="font-size:.85rem;">Farm / Block</p>
+      <p class="text-muted-custom mb-3">${a.farm}</p>
+      <p class="fw-semibold mb-2" style="font-size:.85rem;">Medicine History (${relatedAmu.length})</p>
+      ${relatedAmu.length ? relatedAmu.map(r=>`<div class="card-solid p-2 mb-2" style="font-size:.8rem;"><strong>${r.drug}</strong> — ${r.dosage} <span class="text-muted-custom">(${r.dateAdmin})</span></div>`).join('') : `<p class="text-muted-custom" style="font-size:.82rem;">No treatments recorded.</p>`}
+      <p class="fw-semibold mb-2 mt-3" style="font-size:.85rem;">MRL Test History (${relatedMrl.length})</p>
+      ${relatedMrl.length ? relatedMrl.map(r=>`<div class="card-solid p-2 mb-2 d-flex justify-content-between" style="font-size:.8rem;"><span>${r.substance} — ${r.tissue}</span><span class="pill ${r.compliant?'pill-green':'pill-red'}">${r.compliant?'Pass':'Fail'}</span></div>`).join('') : `<p class="text-muted-custom" style="font-size:.82rem;">No tests recorded.</p>`}
+      <button class="btn btn-brand w-100 mt-3"><i class="bi bi-pencil-square me-1"></i>Edit Record</button>
+    `;
+    new bootstrap.Offcanvas(document.getElementById('animalDetailPanel')).show();
+  }
+
+  document.getElementById('saveAnimalBtn').addEventListener('click', () => {
+    bootstrap.Modal.getInstance(document.getElementById('addAnimalModal')).hide();
+    ag_toast('Animal registered successfully', 'green', 'check-circle-fill');
+    document.getElementById('addAnimalForm').reset();
+  });
+
+  renderTable();
+</script>
+</body>
+</html>

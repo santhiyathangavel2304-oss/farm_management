@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Disease Detection — AgriGuard AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .upload-zone{
+    border: 2px dashed var(--surface-border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 1.5rem;
+    text-align:center;
+    cursor:pointer;
+    transition: all var(--transition-fast);
+    background: var(--surface-solid);
+  }
+  .upload-zone:hover, .upload-zone.dragover{ border-color: var(--green-500); background: var(--green-100); }
+  .upload-zone .up-icon{ font-size:2.2rem; color: var(--green-600); }
+  .preview-img{ width:100%; max-height:320px; object-fit:cover; border-radius: var(--radius-md); }
+  .scan-overlay{
+    position:relative; overflow:hidden; border-radius: var(--radius-md);
+  }
+  .scan-line{
+    position:absolute; left:0; right:0; height:3px;
+    background: linear-gradient(90deg, transparent, var(--green-500), transparent);
+    box-shadow: 0 0 12px var(--green-500);
+    animation: scanMove 1.8s linear infinite;
+  }
+  @keyframes scanMove{ 0%{ top:0; } 100%{ top:100%; } }
+  .confidence-bar{ height:8px; border-radius:6px; background: var(--surface-border); overflow:hidden; }
+  .confidence-fill{ height:100%; border-radius:6px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div id="agShellSidebar"></div>
+  <div class="main-col" id="agMainCol">
+    <div id="agShellTopbar"></div>
+
+    <div class="page-body">
+
+      <div class="row g-3">
+        <div class="col-lg-5">
+          <div class="glass-card p-4 animate-in">
+            <span class="eyebrow">Image-based screening</span>
+            <h2 class="mb-3">Upload for AI Analysis</h2>
+
+            <div class="mb-3">
+              <label class="form-label">Animal</label>
+              <select class="form-select" id="diseaseAnimalSelect"></select>
+            </div>
+
+            <div id="uploadZone" class="upload-zone">
+              <div id="uploadPromptState">
+                <div class="up-icon mb-2"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+                <p class="mb-1 fw-semibold">Drop an image here or click to upload</p>
+                <p class="text-muted-custom mb-0" style="font-size:.8rem;">Supports JPG, PNG up to 10MB — livestock skin, eyes, or general condition photos</p>
+              </div>
+              <div id="uploadPreviewState" style="display:none;">
+                <div class="scan-overlay mb-2">
+                  <img id="previewImg" class="preview-img" src="" alt="Uploaded preview">
+                  <div class="scan-line" id="scanLine" style="display:none;"></div>
+                </div>
+                <button class="btn btn-outline-brand btn-sm" id="removeImgBtn"><i class="bi bi-arrow-repeat me-1"></i>Choose different image</button>
+              </div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;">
+
+            <button class="btn btn-brand w-100 mt-3" id="analyzeBtn" disabled><i class="bi bi-stars me-1"></i>Run AI Analysis</button>
+
+            <div class="card-solid p-3 mt-3" style="font-size:.8rem;">
+              <i class="bi bi-info-circle me-1" style="color:var(--blue-600);"></i>
+              This tool provides a preliminary AI screening only and does not replace veterinary diagnosis.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="glass-card p-4 h-100 animate-in" id="resultsPanel">
+            <span class="eyebrow">Diagnostic output</span>
+            <h2 class="mb-3">Analysis Result</h2>
+            <div id="resultsEmptyState" class="text-center py-5">
+              <i class="bi bi-camera" style="font-size:2.5rem; color:var(--text-muted);"></i>
+              <p class="text-muted-custom mt-3 mb-0">Upload an image and run analysis to see AI results here.</p>
+            </div>
+            <div id="resultsLoadingState" style="display:none;" class="text-center py-5">
+              <div class="spinner-border" style="color:var(--green-600); width:3rem; height:3rem;"></div>
+              <p class="text-muted-custom mt-3 mb-0" id="loadingText">Analyzing image with AI model…</p>
+            </div>
+            <div id="resultsContentState" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card p-4 mt-3 animate-in">
+        <div class="section-head">
+          <div><span class="eyebrow">History</span><h2>Recent Detection Scans</h2></div>
+        </div>
+        <div class="table-responsive">
+          <table class="table-clean">
+            <thead><tr><th>Animal</th><th>Scan Date</th><th>AI Finding</th><th>Confidence</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Swine 33</strong><br><span class="text-muted-custom" style="font-size:.75rem;">SWN-1033</span></td>
+                <td>2026-07-03</td>
+                <td>Mild respiratory infection suspected</td>
+                <td><span class="pill pill-amber">82%</span></td>
+                <td><span class="pill pill-blue">Vet review pending</span></td>
+              </tr>
+              <tr>
+                <td><strong>Dairy Cattle 12</strong><br><span class="text-muted-custom" style="font-size:.75rem;">CTL-1012</span></td>
+                <td>2026-07-01</td>
+                <td>No abnormalities detected</td>
+                <td><span class="pill pill-green">94%</span></td>
+                <td><span class="pill pill-green">Cleared</span></td>
+              </tr>
+              <tr>
+                <td><strong>Poultry 07</strong><br><span class="text-muted-custom" style="font-size:.75rem;">PLT-1007</span></td>
+                <td>2026-06-28</td>
+                <td>Signs of skin lesion — possible fowl pox</td>
+                <td><span class="pill pill-red">76%</span></td>
+                <td><span class="pill pill-red">Isolated</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  ag_requireAuth();
+  ag_initShell('disease', 'AI Disease Detection', 'Upload an image for a preliminary AI health screening');
+
+  document.getElementById('diseaseAnimalSelect').innerHTML = AG_DATA.animals.map(a=>`<option value="${a.id}">${a.name} (${a.id}) — ${a.species}</option>`).join('');
+
+  const uploadZone = document.getElementById('uploadZone');
+  const fileInput = document.getElementById('fileInput');
+  const promptState = document.getElementById('uploadPromptState');
+  const previewState = document.getElementById('uploadPreviewState');
+  const previewImg = document.getElementById('previewImg');
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  const removeBtn = document.getElementById('removeImgBtn');
+
+  uploadZone.addEventListener('click', (e) => { if(e.target !== removeBtn) fileInput.click(); });
+  ['dragover','dragenter'].forEach(ev => uploadZone.addEventListener(ev, e => { e.preventDefault(); uploadZone.classList.add('dragover'); }));
+  ['dragleave','drop'].forEach(ev => uploadZone.addEventListener(ev, e => { e.preventDefault(); uploadZone.classList.remove('dragover'); }));
+  uploadZone.addEventListener('drop', e => { if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+
+  function handleFile(file){
+    const reader = new FileReader();
+    reader.onload = e => {
+      previewImg.src = e.target.result;
+      promptState.style.display = 'none';
+      previewState.style.display = 'block';
+      analyzeBtn.disabled = false;
+      resetResults();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    promptState.style.display = 'block';
+    previewState.style.display = 'none';
+    analyzeBtn.disabled = true;
+    fileInput.value = '';
+    resetResults();
+  });
+
+  function resetResults(){
+    document.getElementById('resultsEmptyState').style.display = 'block';
+    document.getElementById('resultsLoadingState').style.display = 'none';
+    document.getElementById('resultsContentState').style.display = 'none';
+  }
+
+  const mockFindings = [
+    { condition:"No abnormalities detected", confidence:94, severity:"low", recs:["Continue routine monitoring","No treatment required at this time","Re-screen in 30 days as part of regular checkup"] },
+    { condition:"Mild respiratory infection suspected", confidence:82, severity:"medium", recs:["Isolate animal from herd to prevent spread","Recommend veterinary auscultation within 48 hours","Consider Tylosin course pending vet confirmation","Monitor feed intake and temperature daily"] },
+    { condition:"Possible early-stage foot rot", confidence:78, severity:"medium", recs:["Inspect hoof for lesions or foul odor","Move to dry bedding area immediately","Schedule vet visit within 24–48 hours"] },
+    { condition:"Signs of skin lesion — possible fowl pox", confidence:76, severity:"high", recs:["Isolate affected bird immediately","Disinfect surrounding housing area","Contact veterinarian for confirmatory diagnosis","Avoid new antimicrobial treatment until confirmed viral"] }
+  ];
+
+  analyzeBtn.addEventListener('click', () => {
+    document.getElementById('resultsEmptyState').style.display = 'none';
+    document.getElementById('resultsLoadingState').style.display = 'block';
+    document.getElementById('resultsContentState').style.display = 'none';
+    document.getElementById('scanLine').style.display = 'block';
+    analyzeBtn.disabled = true;
+
+    const steps = ["Analyzing image with AI model…","Comparing against disease pattern database…","Generating confidence scores…"];
+    let i = 0;
+    const loadingText = document.getElementById('loadingText');
+    const stepInterval = setInterval(() => {
+      i++;
+      if(i < steps.length) loadingText.textContent = steps[i];
+    }, 700);
+
+    setTimeout(() => {
+      clearInterval(stepInterval);
+      document.getElementById('scanLine').style.display = 'none';
+      const result = mockFindings[Math.floor(Math.random()*mockFindings.length)];
+      renderResult(result);
+      analyzeBtn.disabled = false;
+    }, 2400);
+  });
+
+  function renderResult(result){
+    document.getElementById('resultsLoadingState').style.display = 'none';
+    const contentEl = document.getElementById('resultsContentState');
+    contentEl.style.display = 'block';
+
+    const tint = result.severity === 'low' ? 'green' : result.severity === 'medium' ? 'amber' : 'red';
+    const barColor = tint==='green' ? 'var(--green-600)' : tint==='amber' ? 'var(--amber-600)' : 'var(--red-600)';
+
+    contentEl.innerHTML = `
+      <div class="d-flex align-items-start justify-content-between mb-3">
+        <div>
+          <span class="pill pill-${tint} mb-2"><span class="pill-dot"></span>${result.severity === 'low' ? 'Low concern' : result.severity === 'medium' ? 'Moderate concern' : 'High concern'}</span>
+          <h4 class="mb-0">${result.condition}</h4>
+        </div>
+        <div class="text-end">
+          <div class="mono fw-bold" style="font-size:1.3rem;">${result.confidence}%</div>
+          <div class="text-muted-custom" style="font-size:.72rem;">AI Confidence</div>
+        </div>
+      </div>
+      <div class="confidence-bar mb-4">
+        <div class="confidence-fill" style="width:0%; background:${barColor};" id="confFillBar"></div>
+      </div>
+      <p class="fw-semibold mb-2" style="font-size:.88rem;">Recommended Actions</p>
+      <ul class="mb-4">${result.recs.map(r=>`<li style="font-size:.87rem; margin-bottom:.3rem;">${r}</li>`).join('')}</ul>
+      <div class="d-flex gap-2">
+        <button class="btn btn-brand" onclick="ag_toast('Case flagged for veterinary review','amber','clipboard2-pulse-fill')"><i class="bi bi-clipboard2-pulse me-1"></i>Flag for Vet Review</button>
+        <button class="btn btn-outline-brand" onclick="ag_toast('Report saved to animal profile','green','check-circle-fill')"><i class="bi bi-download me-1"></i>Save to Record</button>
+      </div>
+    `;
+    setTimeout(() => { document.getElementById('confFillBar').style.width = result.confidence + '%'; }, 100);
+  }
+</script>
+</body>
+</html>
